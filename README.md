@@ -57,3 +57,8 @@ for a 'dev' or 'prod' environment.
 You need to know your environment to get this working.  It's pretty rough but, it's 
 working for me.
 
+Running
+-------
+Once your scripts are configured, run:
+
+perl oditerator.pl
