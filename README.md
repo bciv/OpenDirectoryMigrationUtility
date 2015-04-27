@@ -46,17 +46,29 @@ Configuring
 Before you run the scripts it is a good idea to configure them to work with your
 environment.
 
-Change the lines 15 and 16 of the notification-email.pl script to set your sender
-account email address and password.
-
-Change the variables on lines 22-44 for your environments.
+Look in the oditerator.pl script and change the parameters for your environment:
 
 There is a variable called $stage where you set whether you are running the script
 for a 'dev' or 'prod' environment.
 
-You need to know your environment to get this working.  It's pretty rough but, it's 
-working for me.
+These are the variable that need to be set:
 
+$base="dc=MyComputerName,dc=local"; 
+
+$diradmin_username='diradmin';
+$diradmin_password='supersecretpassword12345!!!!';
+$from_email='development@example.com';
+$from_email_password='supersecretemailpassword2015!!!!';  
+$smtp_server='smtp.gmail.com'; 
+$smtp_port='465';
+$system="Development Server";
+$url="http://localhost";
+$helpdeskurl="http://help.MyComputer.local";
+$helpdeskemail="test1\@example.com";
+$helpdeskcontact="Test Help Contact";
+-- this is a string to append to the end of the generated password that is reset
+$extra='2015!';
+  
 Running
 -------
 Once your scripts are configured, run:
