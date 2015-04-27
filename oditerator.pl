@@ -91,25 +91,45 @@ foreach $entr ( @entries ) {
                 ."2015!";
   }
   
-  unless($uid eq 'diradmin' or $uid eq 'bciv'){
+  my $sendemail='false';
+  unless($uid eq 'diradmin'){
     print "uid:$uid first:$firstname last:$lastname email:$email pw:$newpassword";
     
     if($email=~m/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i){
-      print " !";
-      
-      # set new password
-      my $result=$ldap->set_password(newpasswd=>"$newpassword",user=>"uid=$uid,cn=users,$base");
-    
+      print " !E";      
+      `echo $uid,$firstname,$lastname,$email,$newpassword >> oditerator-sent.log`;
+      $sendemail='true';
+    }
+    elsif($lastname=~m/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i){
+      print " !L";
+      $email=$lastname;
+      `echo $uid,$firstname,$lastname,$email,$newpassword >> oditerator-sent.log`;
+      $sendemail='true';
+    }
+    elsif($firstname=~m/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i){
+      print " !F";
+      $email=$firstname;
+      `echo $uid,$firstname,$lastname,$email,$newpassword >> oditerator-sent.log`;
+      $sendemail='true';
+    }
+    else{
+      print " XX";
+      `echo $uid,$firstname,$lastname,$email,$newpassword >> oditerator-no-email.log`;
+    }
+
+    # set new password
+    my $result=$ldap->set_password(newpasswd=>"$newpassword",user=>"uid=$uid,cn=users,$base");
+
+    if($sendemail eq 'true'){      
       # send email notification
       my $body="$firstname $lastname:<br /><br />Your password to the <b>$system</b> at <a href=\"$url\">$url</a> has been reset as part of an system migration.<br /><br />Your new password is: $newpassword<br /><br />If you have any questions or concerns please do not hesitate to contact the VHA Innovation Help Desk at: <a href=\"$helpdeskurl\">$helpdeskurl</a> or email: <a href=\'mailto:$helpdeskemail?subject=$system Password Reset\'>$helpdeskemail</a><br /><br />--<br />$helpdeskcontact";
       my $output=`./notification-email.pl $email \"$system Password Reset\" \"$body\"`;
       `echo $output >> oditerator-mail.log`;
       `echo $uid,$firstname,$lastname,$email,$newpassword + >> oditerator.log`;
     }
-    else{
-      `echo $uid,$firstname,$lastname,$email,$newpassword >> oditerator.log`;
-    }
-    
+    print "\n";
+  }
+      
     print "\n";
   }  
   print "#-------------------------------\n";
