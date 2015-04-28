@@ -12,6 +12,8 @@ my $url; my $from_email; my $from_email_password;
 my $helpdeskurl; my $helpdeskcontact; my $helpdeskemail;
 my $smtp_server; my $smtp_port;
 
+my $configuration_file='oditerator.config';
+
 `rm oditerator*.log`;
 
 # process:
@@ -30,40 +32,10 @@ my $smtp_server; my $smtp_port;
 # individual processing of users for reset and email notification
 # takes username (which may be an email address).
 
-my $stage='dev'; # dev, test, prod
-
-# set environment variable based on deployment stage
-#
-if($stage eq 'prod'){
-  $base="dc=servername,dc=example,dc=com"; 
-  $diradmin_username='diradmin';
-  $diradmin_password='supersecretpassword12345!!!!';
-  $from_email='production@example.com';
-  $from_email_password='supersecretemailpassword2015!!!!';  
-  $smtp_server='smtp.gmail.com'; 
-  $smtp_port='465';
-  $system="Apple Wiki";
-  $url="https://wiki.example.com";
-  $helpdeskurl="http://help.example.com";
-  $helpdeskemail="help@example.com";
-  $helpdeskcontact="Help Desk Team";
-  $extra='2015!';
-}
-elsif($stage eq 'dev'){
-  $base="dc=MyComputerName,dc=local"; 
-  $diradmin_username='diradmin';
-  $diradmin_password='supersecretpassword12345!!!!';
-  $from_email='development@example.com';
-  $from_email_password='supersecretemailpassword2015!!!!';  
-  $smtp_server='smtp.gmail.com'; 
-  $smtp_port='465';
-  $system="Development Server";
-  $url="http://localhost";
-  $helpdeskurl="http://help.MyComputer.local";
-  $helpdeskemail="test1\@example.com";
-  $helpdeskcontact="Test Help Contact";
-  $extra='2015!';
-}
+# see sample.config and create a configuration file based upon your environment
+# update next line to require the configuration file you have configured
+# set environment variables
+configure($configuration_file);
 
 my @Attrs = ('uid','uidNumber','givenName','sn','mail');  
  
@@ -180,4 +152,10 @@ sub send_mail {
   $smtp->datasend($body . "\n");
   $smtp->dataend();
   $smtp->quit;
+}
+
+sub configure{
+  my $file=$_[0];
+  open(IN,$file) or die "Cannot read configuration file, $file : $!";
+  while(<IN>){eval $_;} close(IN);
 }

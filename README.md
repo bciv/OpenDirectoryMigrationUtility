@@ -46,15 +46,12 @@ Configuring
 Before you run the scripts it is a good idea to configure them to work with your
 environment.
 
-Look in the oditerator.pl script and change the parameters for your environment:
+# copy the sample.oditerator.config file, set the variables to work for your environment, 
+and then rename it to: oditerator.config
 
-There is a variable called $stage where you set whether you are running the script
-for a 'dev' or 'prod' environment.
-
-These are the variable that need to be set:
+These are the variables that need to be configured:
 
 $base="dc=MyComputerName,dc=local"; 
-
 $diradmin_username='diradmin';
 $diradmin_password='supersecretpassword12345!!!!';
 $from_email='development@example.com';
@@ -66,7 +63,6 @@ $url="http://localhost";
 $helpdeskurl="http://help.MyComputer.local";
 $helpdeskemail="test1\@example.com";
 $helpdeskcontact="Test Help Contact";
--- this is a string to append to the end of the generated password that is reset
 $extra='2015!';
   
 Running
