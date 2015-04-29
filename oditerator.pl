@@ -111,10 +111,7 @@ foreach $entr ( @entries ) {
       my $subject="$system Password Reset";
       my $to=$email;
       my $body="$firstname $lastname:<br /><br />Your password to the <b>$system</b> at <a href=\"$url\">$url</a> has been reset as part of an system migration.<br /><br />Your new password is: $newpassword<br /><br />If you have any questions or concerns please do not hesitate to contact the VHA Innovation Help Desk at: <a href=\"$helpdeskurl\">$helpdeskurl</a> or email: <a href=\'mailto:$helpdeskemail?subject=$system Password Reset\'>$helpdeskemail</a><br /><br />--<br />$helpdeskcontact";
-      # my $output=`./notification-email.pl $email \"$system Password Reset\" \"$body\"`;
-      #`echo $output >> oditerator-mail.log`;
       `echo $uid,$firstname,$lastname,$email,$newpassword + >> oditerator.log`;
-      # Send email
       &send_mail("$to", "$subject", "$body");
     }
   }
@@ -127,22 +124,17 @@ sub send_mail {
   my $to = $_[0];
   my $subject = $_[1];
   my $body = $_[2];
-
   my $smtp;
-
   if (not $smtp = Net::SMTP::SSL->new($smtp_server,Port=>$smtp_port,Debug=>1)){
     die "Could not connect to server\n";
   }
-
   $smtp->auth($from_email, $from_email_password) || die "Authentication failed!\n";
-
   $smtp->mail($from_email . "\n");
   my @recepients = split(/,/, $to);
   foreach my $recp (@recepients) {
       $smtp->to($recp . "\n");
   }
   $smtp->data();
-  # test
   $smtp->datasend("MIME-Version: 1.0\n");
   $smtp->datasend("Content-Type: text/html\n");
   $smtp->datasend("From: " . $from_email . "\n");
